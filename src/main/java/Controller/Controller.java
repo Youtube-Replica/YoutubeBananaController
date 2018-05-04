@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class Controller {
 
     public static final HashSet<ChannelHandlerContext> channels = new HashSet<>();
+    public static int errorLvl = 1;
     public Controller() throws InterruptedException {
 
     }
@@ -37,9 +38,13 @@ public class Controller {
                         while (true){
                             Scanner sc = new Scanner(System.in);
                             String line = sc.nextLine();
+                            String[] split = line.split(" ");
                             System.out.println(Controller.channels.size());
-                            for(ChannelHandlerContext c : channels)
-                                c.channel().writeAndFlush(Unpooled.copiedBuffer(line, CharsetUtil.UTF_8));
+                            if(line.equals("Error"))
+                                errorLvl = Integer.parseInt(split[1]);
+                            else
+                                for(ChannelHandlerContext c : channels)
+                                     c.channel().writeAndFlush(Unpooled.copiedBuffer(line, CharsetUtil.UTF_8));
                         }
                     } catch(Exception v) {
                         System.out.println(v);

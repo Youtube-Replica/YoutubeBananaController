@@ -26,7 +26,15 @@ public class ControllerHandler extends ChannelInboundHandlerAdapter {
 
         String received = inBuffer.toString(CharsetUtil.UTF_8);
         System.out.println("Server received: " + received);
-
+        String[] split = received.split(">");
+        switch (Controller.errorLvl){
+            case 1:
+                System.out.println(split[1]);
+                break;
+            case 2:
+                if(split[0].equals("Error"))
+                    System.out.println(split[1]);
+        }
 //        ctx.writeAndFlush(Unpooled.copiedBuffer("10 ", CharsetUtil.UTF_8));
     }
 
