@@ -8,12 +8,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.CharsetUtil;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller {
 
-    public static final HashSet<ChannelHandlerContext> channels = new HashSet<>();
+    public static final ArrayList<ChannelHandlerContext> channels = new ArrayList<>();
     public static int errorLvl = 1;
     public Controller() throws InterruptedException {
 
@@ -21,7 +21,6 @@ public class Controller {
 
     public void run() throws InterruptedException {
         NioEventLoopGroup group = new NioEventLoopGroup();
-
         try{
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(group);
@@ -31,7 +30,6 @@ public class Controller {
             ChannelFuture channelFuture = serverBootstrap.bind(9999).sync();
 
             //any code related to server channel should be before the closeFuture
-
             Thread one = new Thread() {
                 public void run() {
                     try {
@@ -42,9 +40,9 @@ public class Controller {
                             System.out.println(Controller.channels.size());
                             if(line.equals("Error"))
                                 errorLvl = Integer.parseInt(split[1]);
-                            else
-                                for(ChannelHandlerContext c : channels)
-                                     c.channel().writeAndFlush(Unpooled.copiedBuffer(line, CharsetUtil.UTF_8));
+                            else {
+                                channels.get(Integer.parseInt(split[1])).channel().writeAndFlush(Unpooled.copiedBuffer(line, CharsetUtil.UTF_8));
+                            }
                         }
                     } catch(Exception v) {
                         System.out.println(v);
